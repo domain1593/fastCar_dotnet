@@ -12,7 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
-namespace git_repos
+namespace fast_car
 {
     public class Startup
     {
@@ -33,7 +33,7 @@ namespace git_repos
                     c
                         .SwaggerDoc("v1",
                         new OpenApiInfo {
-                            Title = "git_repos",
+                            Title = "fast_car",
                             Version = "v1"
                         });
                 });
@@ -50,7 +50,7 @@ namespace git_repos
                     .UseSwaggerUI(c =>
                         c
                             .SwaggerEndpoint("/swagger/v1/swagger.json",
-                            "git_repos v1"));
+                            "fast_car v1"));
             }
 
             app.UseHttpsRedirection();

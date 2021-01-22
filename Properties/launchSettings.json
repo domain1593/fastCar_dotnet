@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "git_repos": {
+    "fast_car": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

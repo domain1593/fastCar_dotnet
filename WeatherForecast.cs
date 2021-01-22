@@ -1,6 +1,6 @@
 using System;
 
-namespace git_repos
+namespace fast_car
 {
     public class WeatherForecast
     {

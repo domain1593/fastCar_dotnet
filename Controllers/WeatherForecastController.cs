@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace git_repos.Controllers
+namespace fast_car.Controllers
 {
     [ApiController]
     [Route("[controller]")]
