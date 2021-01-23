@@ -1,15 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using JWTAuthentication.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace fast_car
@@ -27,15 +33,51 @@ namespace fast_car
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services
+                .AddDbContext<ApplicationDbContext>(opt =>
+                    opt
+                        .UseSqlServer(Configuration
+                            .GetConnectionString("ConnStr")));
+
+            services
+                .AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            services
+                .AddAuthentication(opt =>
+                {
+                    opt.DefaultAuthenticateScheme =
+                        JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultChallengeScheme =
+                        JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(opt =>
+                {
+                    opt.SaveToken = true;
+                    opt.RequireHttpsMetadata = false;
+                    opt.TokenValidationParameters =
+                        new TokenValidationParameters()
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidAudience = Configuration["JWT:ValidAudience"],
+                            ValidIssuer = Configuration["JWT:ValidIssuer"],
+                            IssuerSigningKey =
+                                new SymmetricSecurityKey(Encoding
+                                        .UTF8
+                                        .GetBytes(Configuration["JWT:Secret"]))
+                        };
+                });
+
             services
                 .AddSwaggerGen(c =>
                 {
                     c
                         .SwaggerDoc("v1",
-                        new OpenApiInfo {
-                            Title = "fast_car",
-                            Version = "v1"
-                        });
+                        new OpenApiInfo { Title = "fast_car", Version = "v1" });
                 });
         }
 
@@ -57,6 +99,7 @@ namespace fast_car
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app
